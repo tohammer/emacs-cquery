@@ -39,6 +39,10 @@
   "."
   :group 'cquery-tree)
 
+(defcustom cquery-tree-symbols "└├⏴⏵⏷╸"
+  "Tree symbols."
+  :group 'cquery-tree)
+
 (defface cquery-tree-root-face
   '((t (:height 1.5 :line-height 2.0)))
   "."
@@ -165,11 +169,15 @@
   (let* ((padding (if (= depth 0) "" (make-string (* 2 (- depth 1)) ?\ )))
          (symbol (if (= depth 0)
                      (if (cquery-tree-node-parent node)
-                         "⏴ "
+                         (string (elt cquery-tree-symbols 2) ?\s)
                        "")
                    (if (cquery-tree-node-has-children node)
-                       (if (cquery-tree-node-expanded node) "└⏷" "└⏵")
-                     (if (eq number (- nchildren 1)) "└╸" "├╸")))))
+                       (if (cquery-tree-node-expanded node)
+                           (string (elt cquery-tree-symbols 0) (elt cquery-tree-symbols 4))
+                         (string (elt cquery-tree-symbols 0) (elt cquery-tree-symbols 3)))
+                     (if (eq number (- nchildren 1))
+                         (string (elt cquery-tree-symbols 0) (elt cquery-tree-symbols 5))
+                       (string (elt cquery-tree-symbols 1) (elt cquery-tree-symbols 5)))))))
     (concat padding (propertize symbol 'face 'cquery-tree-icon-face))))
 
 (defun cquery-tree--expand-levels (node levels)
